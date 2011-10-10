@@ -8,7 +8,11 @@ $(function(){
   TextItem = Backbone.Model.extend({
 	
 		defaults: {
-				"text": ""
+				"text": "",
+				"editing": false
+		},
+		toggleEdit: function(){
+			this.save({editing: !this.get("editing")});
 		}
 	
   });
@@ -52,15 +56,14 @@ $(function(){
     initialize: function() {
      
       this.model.bind('destroy', this.remove, this);
+	  this.model.bind("change", this.render, this);
     },
 	
-	// Remove this view from the DOM.
-    remove: function() {
-      $(this.el).remove();
-    },
-	
+		
 	events: {
-		"click a": "clear"
+		"click a": "clear",
+		"dblclick .text-item": "toggle",
+		"keyup input": "finishedEditing"
 	},
 	
 	clear: function(){
@@ -69,6 +72,19 @@ $(function(){
 	
 	remove: function(){
 		$(this.el).remove();
+	},
+	
+	toggle: function(){
+		this.model.toggleEdit();
+	},
+	
+	finishedEditing: function(e){
+		
+		if (e.keyCode == 13) {
+			var text = $(this.el).find("input").val();
+			this.model.save({"text": text});
+			this.toggle();
+		}
 	}
 	
 	
