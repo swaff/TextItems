@@ -33,8 +33,6 @@ $(function(){
   TextItems = new TextItemList();
   
   
-  
-  
   // This is the view for a single text item
   //
   //
@@ -61,8 +59,10 @@ $(function(){
 	
 		
 	events: {
-		"click a": "clear",
+		"click .remove-item": "clear",
 		"dblclick .text-item": "toggle",
+		"click .edit-item": "toggle",
+		"click .cancel-item": "toggle",
 		"keyup input": "finishedEditing"
 	},
 	
@@ -76,6 +76,11 @@ $(function(){
 	
 	toggle: function(){
 		this.model.toggleEdit();
+		
+		if(this.model.get("editing")){
+			$(this.el).find("input")
+						.focus();
+		}
 	},
 	
 	finishedEditing: function(e){
@@ -101,8 +106,15 @@ $(function(){
 	
 	// Delegated events for creating new items, and clearing completed ones.
     events: {
-      "click #btnAdd": "createItem"
+      "click #btnAdd": "createItem",
+	  "keyup #txtText": "enterItem"
     },
+	
+	enterItem: function(e){
+		if (e.keyCode == 13) {
+			this.createItem();
+		}
+	},
 
     createItem: function(){
 		
@@ -127,6 +139,8 @@ $(function(){
       TextItems.bind('add', this.addOne, this);
 	  TextItems.bind('reset', this.addAll, this);
       TextItems.fetch();
+	  
+	  $("#txtText").focus();
     },
 	
 	addOne: function(textItem){
