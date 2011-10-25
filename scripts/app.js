@@ -63,7 +63,8 @@ $(function(){
 		"dblclick .text-item": "toggle",
 		"click .edit-item": "toggle",
 		"click .cancel-item": "toggle",
-		"keyup input": "finishedEditing"
+		"keyup input": "finishedEditing",
+		"click .save-item": "save",
 	},
 	
 	clear: function(){
@@ -83,12 +84,16 @@ $(function(){
 		}
 	},
 	
+	save: function(){
+		var text = $(this.el).find("input").val();
+			this.model.save({"text": text});
+			this.toggle();
+	},
+	
 	finishedEditing: function(e){
 		
 		if (e.keyCode == 13) {
-			var text = $(this.el).find("input").val();
-			this.model.save({"text": text});
-			this.toggle();
+			save();
 		}
 	}
 	
